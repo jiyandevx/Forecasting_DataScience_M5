@@ -1,0 +1,11 @@
+# data never goes to git (size, and M5 is not ours to redistribute)
+data/
+# python
+.venv/
+__pycache__/
+*.egg-info/
+.ipynb_checkpoints/
+# misc
+.DS_Store
+.env
+kaggle.json
