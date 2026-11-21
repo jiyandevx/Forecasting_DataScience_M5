@@ -12,6 +12,7 @@ dependencies = [
     "statsmodels",
     "ipykernel",
     "nbstripout",
+    "plotly>=7.1.0",
 ]
 
 [build-system]

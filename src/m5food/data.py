@@ -28,6 +28,36 @@ def load_sales_foods(raw_dir: Path = RAW, sales_file: str = SALES_FILE) -> pd.Da
     return sales[sales.cat_id == CATEGORY].reset_index(drop=True)
 
 
+STATE_NAME = {"CA": "California", "TX": "Texas", "WI": "Wisconsin"}
+
+
+def store_name(store_id: str) -> str:
+    """'CA_1' -> 'California store 1'."""
+    state, n = store_id.split("_")
+    return f"{STATE_NAME[state]} store {n}"
+
+
+def dept_name(dept_id: str) -> str:
+    """'FOODS_3' -> 'Food dept 3'. M5 does not say what each department sells."""
+    return f"Food dept {dept_id.split('_')[1]}"
+
+
+def add_readable_names(df: pd.DataFrame) -> pd.DataFrame:
+    """Add plain-English columns next to the ids: state, store, dept.
+
+    The ids (state_id, store_id, dept_id) are kept: sell_prices and the calendar's
+    snap_CA/TX/WI columns use them, so they are needed for joins.
+    """
+    out = df.copy()
+    if "state_id" in out:
+        out.insert(out.columns.get_loc("state_id") + 1, "state", out["state_id"].map(STATE_NAME))
+    if "store_id" in out:
+        out.insert(out.columns.get_loc("store_id") + 1, "store", out["store_id"].map(store_name))
+    if "dept_id" in out:
+        out.insert(out.columns.get_loc("dept_id") + 1, "dept", out["dept_id"].map(dept_name))
+    return out
+
+
 def day_columns(sales: pd.DataFrame) -> list[str]:
     """The d_1 ... d_N columns of the wide sales table."""
     return [c for c in sales.columns if c.startswith("d_")]
